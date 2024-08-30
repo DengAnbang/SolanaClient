@@ -7,6 +7,7 @@ use solana_client::rpc_client::RpcClient;
 use solana_program::pubkey::Pubkey;
 use solana_program::system_program;
 use solana_sdk::{signature::Keypair, signer::Signer, transaction::Transaction};
+use crate::common::calculate_discriminator;
 
 pub fn test(rpc_client: &RpcClient, payer: &Keypair) {
     let program_id = solana_program::pubkey::Pubkey::from_str("CKyE2drXuaYcbBF8japHFSQTgEShYfGBtZKjJuN1nMT3").unwrap();
@@ -113,16 +114,3 @@ fn create(client: &RpcClient, program_id: &solana_program::pubkey::Pubkey, payer
     println!("account_data {:?} ", &account_data[..]);
 }
 
-
-fn calculate_discriminator(account_type: &str) -> [u8; 8] {
-    let preimage = format!("{}:{}", "global", account_type);
-    let mut hasher = Sha256::new();
-    hasher.update(preimage.as_bytes());
-
-    let result = hasher.finalize();
-
-    let mut discriminator = [0u8; 8];
-    discriminator.copy_from_slice(&result[..8]);
-
-    discriminator
-}
